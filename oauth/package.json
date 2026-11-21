@@ -1,0 +1,12 @@
+{
+  "name": "xuhong-homepage-oauth",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test worker.test.mjs",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run --outdir .worker-check"
+  },
+  "devDependencies": { "wrangler": "4.59.1" }
+}

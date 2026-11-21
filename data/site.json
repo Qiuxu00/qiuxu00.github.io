@@ -1,0 +1,50 @@
+{
+  "name": "Xuhong Qiu",
+  "chinese_name": "丘序泓",
+  "role": "Undergraduate Student",
+  "affiliation": "Southeast University",
+  "degree": "Computer Science and Technology",
+  "email": "qiuxuhong@seu.edu.cn",
+  "gmail": "",
+  "scholar_url": "https://scholar.google.com/citations?user=avThPnwAAAAJ&hl=en",
+  "github_url": "https://github.com/Qiuxu00",
+  "photo": "",
+  "about": "I am an undergraduate student in Computer Science and Technology at Southeast University. My research interests lie in efficient and lightweight large models.\n\nI am currently focusing on quantization methods for vision-language-action (VLA) models.",
+  "research": [
+    {
+      "title": "Efficient Large Models",
+      "description": "Efficiency and lightweight methods for large models."
+    },
+    {
+      "title": "VLA Quantization",
+      "description": "Quantization methods for vision-language-action models."
+    }
+  ],
+  "publications": [
+    {
+      "title": "AGQ: Action-Guided Ultra-Low-Bit Quantization for Vision-Language-Action Models",
+      "authors": "Xuhong Qiu, Zhuoyu Wu, Qiawei Zheng, Wenhui Ou, Wenqi Fang, Raphaël C.-W. Phan",
+      "venue": "arXiv preprint",
+      "year": "2026",
+      "url": "https://arxiv.org/abs/2610.33074",
+      "code": "https://github.com/Qiuxu00/AGQ",
+      "summary": "Action-guided quantization for reducing the memory footprint of vision-language-action models while preserving robot task performance."
+    },
+    {
+      "title": "TernScope: Model-Hardware Co-Design for Efficient Ternary Endoscopic Segmentation",
+      "authors": "Zhuoyu Wu, Wenhui Ou, Qiawei Zheng, Xuhong Qiu, Wenqi Fang, Raphaël C.-W. Phan",
+      "venue": "arXiv preprint",
+      "year": "2026",
+      "url": "https://arxiv.org/abs/2610.29617",
+      "code": "https://github.com/ReaganWu/TernScope",
+      "summary": "Model–hardware co-design for compact endoscopic segmentation using ternary weights and efficient accelerator execution."
+    }
+  ],
+  "education": [
+    {
+      "institution": "Southeast University",
+      "degree": "Undergraduate · Computer Science and Technology",
+      "period": ""
+    }
+  ]
+}

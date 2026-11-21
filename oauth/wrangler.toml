@@ -1,0 +1,12 @@
+name = "xuhong-homepage-auth"
+main = "worker.mjs"
+compatibility_date = "2026-01-01"
+workers_dev = true
+
+[vars]
+SITE_ORIGIN = "https://qiuxu00.github.io"
+ALLOWED_GITHUB_LOGIN = "Qiuxu00"
+CONTENT_REPOSITORY = "Qiuxu00/qiuxu00.github.io"
+
+# Store GITHUB_OAUTH_ID and GITHUB_OAUTH_SECRET in Cloudflare Worker Secrets.
+# Never put their values in this file or the homepage repository.

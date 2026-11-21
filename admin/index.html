@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>主页管理 · Xuhong Qiu</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+  <script src="admin.js" defer></script>
+</head>
+<body>
+  <main id="setup" class="setup">
+    <a href="../">返回主页</a>
+    <p class="eyebrow">CONTENT MANAGER</p>
+    <h1>管理你的学术主页</h1>
+    <p>通过 GitHub 身份验证后，可以在表单中修改简介、研究方向、论文、联系方式和照片。保存内容会提交到仓库，随后自动发布。</p>
+    <p id="status" role="status">正在检查登录配置…</p>
+    <div id="instructions" hidden>
+      <h2>首次使用：连接 GitHub 登录</h2>
+      <p>后台页面已准备好，登录服务尚未连接。完成以下一次性配置后，此页面会显示 GitHub 登录入口。</p>
+      <ol>
+        <li>创建并发布 <code>Qiuxu00/qiuxu00.github.io</code> 仓库中的网站。</li>
+        <li>按项目 <code>oauth/README.md</code> 部署 Cloudflare Worker，并创建 GitHub OAuth App。</li>
+        <li>将 Worker 的 HTTPS 地址填入 <code>admin/settings.json</code> 的 <code>oauth_base_url</code>，提交后等待网站发布。</li>
+      </ol>
+      <p>OAuth Client Secret 仅保存在 Cloudflare 服务端的 Secrets 中。登录完成后仍由 GitHub 验证仓库写入权限。</p>
+    </div>
+    <noscript>请启用 JavaScript 以使用管理界面。</noscript>
+  </main>
+</body>
+</html>

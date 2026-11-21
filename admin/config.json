@@ -1,0 +1,70 @@
+{
+  "backend": {
+    "name": "github",
+    "repo": "Qiuxu00/qiuxu00.github.io",
+    "branch": "main",
+    "auth_endpoint": "auth"
+  },
+  "site_url": "https://qiuxu00.github.io",
+  "display_url": "https://qiuxu00.github.io",
+  "media_folder": "assets/uploads",
+  "public_folder": "/assets/uploads",
+  "locale": "zh_Hans",
+  "publish_mode": "simple",
+  "show_preview_links": false,
+  "collections": [
+    {
+      "name": "homepage",
+      "label": "学术主页",
+      "files": [
+        {
+          "name": "profile",
+          "label": "个人资料与学术内容",
+          "file": "data/site.json",
+          "format": "json",
+          "editor": { "preview": false },
+          "fields": [
+            { "label": "英文姓名", "name": "name", "widget": "string" },
+            { "label": "中文姓名", "name": "chinese_name", "widget": "string", "required": false },
+            { "label": "身份", "name": "role", "widget": "string" },
+            { "label": "学校 / 单位", "name": "affiliation", "widget": "string" },
+            { "label": "专业", "name": "degree", "widget": "string" },
+            { "label": "校内邮箱", "name": "email", "widget": "string", "required": false },
+            { "label": "Gmail", "name": "gmail", "widget": "string", "required": false },
+            { "label": "Google Scholar 地址", "name": "scholar_url", "widget": "string", "required": false },
+            { "label": "GitHub 地址", "name": "github_url", "widget": "string", "required": false },
+            { "label": "个人照片", "name": "photo", "widget": "image", "required": false },
+            { "label": "个人简介（英文）", "name": "about", "widget": "text", "hint": "空一行分段。这里填写的内容会显示在 About me；保存后需等待自动发布完成。" },
+            {
+              "label": "研究方向", "name": "research", "widget": "list", "summary": "{{fields.title}}",
+              "fields": [
+                { "label": "标题", "name": "title", "widget": "string" },
+                { "label": "描述", "name": "description", "widget": "text" }
+              ]
+            },
+            {
+              "label": "论文", "name": "publications", "widget": "list", "required": false, "summary": "{{fields.title}}",
+              "fields": [
+                { "label": "标题", "name": "title", "widget": "string" },
+                { "label": "作者（按原文顺序）", "name": "authors", "widget": "string" },
+                { "label": "期刊 / 会议 / 预印本状态", "name": "venue", "widget": "string" },
+                { "label": "年份", "name": "year", "widget": "string" },
+                { "label": "论文地址", "name": "url", "widget": "string", "required": false },
+                { "label": "代码地址", "name": "code", "widget": "string", "required": false },
+                { "label": "简短介绍", "name": "summary", "widget": "text", "required": false }
+              ]
+            },
+            {
+              "label": "教育经历", "name": "education", "widget": "list", "summary": "{{fields.institution}}",
+              "fields": [
+                { "label": "学校", "name": "institution", "widget": "string" },
+                { "label": "学位 / 专业", "name": "degree", "widget": "string" },
+                { "label": "时间段", "name": "period", "widget": "string", "required": false }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
