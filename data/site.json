@@ -16,10 +16,10 @@
     "about_label": "About me",
     "hero_title": {
       "format": "richtext",
-      "text": "Efficiency AI",
+      "text": "Efficient AI",
       "ops": [
         {
-          "insert": "Efficiency AI\n"
+          "insert": "Efficient AI\n"
         }
       ]
     },
