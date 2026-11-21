@@ -88,120 +88,33 @@
               "required": false
             },
             {
-              "label": "个人简介（英文）",
-              "name": "about",
-              "widget": "richtext",
-              "hint": "选中文字后用工具栏设置颜色、字号和粗细。右侧实时预览；点击发布后等待自动部署完成。",
-              "multiline": true
-            },
-            {
-              "label": "研究方向",
-              "name": "research",
-              "widget": "list",
-              "summary": "{{fields.title.text}}",
-              "fields": [
-                {
-                  "label": "标题",
-                  "name": "title",
-                  "widget": "richtext",
-                  "multiline": false
-                },
-                {
-                  "label": "描述",
-                  "name": "description",
-                  "widget": "richtext",
-                  "multiline": true
-                }
-              ]
-            },
-            {
-              "label": "论文",
-              "name": "publications",
-              "widget": "list",
-              "required": false,
-              "summary": "{{fields.title.text}}",
-              "fields": [
-                {
-                  "label": "标题",
-                  "name": "title",
-                  "widget": "richtext",
-                  "multiline": false,
-                  "allow_links": false
-                },
-                {
-                  "label": "作者（按原文顺序）",
-                  "name": "authors",
-                  "widget": "richtext",
-                  "multiline": false
-                },
-                {
-                  "label": "期刊 / 会议 / 预印本状态",
-                  "name": "venue",
-                  "widget": "richtext",
-                  "multiline": false
-                },
-                {
-                  "label": "年份",
-                  "name": "year",
-                  "widget": "richtext",
-                  "multiline": false
-                },
-                {
-                  "label": "论文地址",
-                  "name": "url",
-                  "widget": "string",
-                  "required": false
-                },
-                {
-                  "label": "代码地址",
-                  "name": "code",
-                  "widget": "string",
-                  "required": false
-                },
-                {
-                  "label": "简短介绍",
-                  "name": "summary",
-                  "widget": "richtext",
-                  "required": false,
-                  "multiline": true
-                }
-              ]
-            },
-            {
-              "label": "教育经历",
-              "name": "education",
-              "widget": "list",
-              "summary": "{{fields.institution.text}}",
-              "fields": [
-                {
-                  "label": "学校",
-                  "name": "institution",
-                  "widget": "richtext",
-                  "multiline": false
-                },
-                {
-                  "label": "学位 / 专业",
-                  "name": "degree",
-                  "widget": "richtext",
-                  "multiline": false
-                },
-                {
-                  "label": "时间段",
-                  "name": "period",
-                  "widget": "richtext",
-                  "required": false,
-                  "multiline": false
-                }
-              ]
-            },
-            {
               "name": "texts",
-              "label": "页面标题、导航与按钮文字",
+              "label": "首页大标题与页面文字（点左侧箭头展开）",
               "widget": "object",
               "required": false,
               "collapsed": true,
-              "hint": "这些文字也支持局部格式；未修改时沿用原来的标题。",
+              "hint": "主页上方的两行大标题在这里修改。展开后最前面的两个输入框对应第一行和第二行；都支持颜色、字号和粗细。",
               "fields": [
+                {
+                  "name": "hero_title",
+                  "label": "首页大标题 · 第一行",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Building toward",
+                  "hint": "对应主页上的 Building toward。直接替换文字，右侧会实时预览。"
+                },
+                {
+                  "name": "hero_accent",
+                  "label": "首页大标题 · 第二行",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "efficient intelligence.",
+                  "hint": "对应主页上的 efficient intelligence.。选中文字后，可用工具栏调整颜色、字号和粗细。"
+                },
                 {
                   "name": "nav_about",
                   "label": "导航 · About",
@@ -237,24 +150,6 @@
                   "multiline": false,
                   "allow_links": false,
                   "default": "About me"
-                },
-                {
-                  "name": "hero_title",
-                  "label": "简介主标题 · 第一行",
-                  "widget": "richtext",
-                  "required": false,
-                  "multiline": false,
-                  "allow_links": false,
-                  "default": "Building toward"
-                },
-                {
-                  "name": "hero_accent",
-                  "label": "简介主标题 · 强调行",
-                  "widget": "richtext",
-                  "required": false,
-                  "multiline": false,
-                  "allow_links": false,
-                  "default": "efficient intelligence."
                 },
                 {
                   "name": "research_title",
@@ -399,6 +294,113 @@
                   "multiline": false,
                   "allow_links": false,
                   "default": "My publication record is available on Google Scholar."
+                }
+              ]
+            },
+            {
+              "label": "个人简介（英文）",
+              "name": "about",
+              "widget": "richtext",
+              "hint": "选中文字后用工具栏设置颜色、字号和粗细。右侧实时预览；点击发布后等待自动部署完成。",
+              "multiline": true
+            },
+            {
+              "label": "研究方向",
+              "name": "research",
+              "widget": "list",
+              "summary": "{{fields.title.text}}",
+              "fields": [
+                {
+                  "label": "标题",
+                  "name": "title",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "描述",
+                  "name": "description",
+                  "widget": "richtext",
+                  "multiline": true
+                }
+              ]
+            },
+            {
+              "label": "论文",
+              "name": "publications",
+              "widget": "list",
+              "required": false,
+              "summary": "{{fields.title.text}}",
+              "fields": [
+                {
+                  "label": "标题",
+                  "name": "title",
+                  "widget": "richtext",
+                  "multiline": false,
+                  "allow_links": false
+                },
+                {
+                  "label": "作者（按原文顺序）",
+                  "name": "authors",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "期刊 / 会议 / 预印本状态",
+                  "name": "venue",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "年份",
+                  "name": "year",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "论文地址",
+                  "name": "url",
+                  "widget": "string",
+                  "required": false
+                },
+                {
+                  "label": "代码地址",
+                  "name": "code",
+                  "widget": "string",
+                  "required": false
+                },
+                {
+                  "label": "简短介绍",
+                  "name": "summary",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": true
+                }
+              ]
+            },
+            {
+              "label": "教育经历",
+              "name": "education",
+              "widget": "list",
+              "summary": "{{fields.institution.text}}",
+              "fields": [
+                {
+                  "label": "学校",
+                  "name": "institution",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "学位 / 专业",
+                  "name": "degree",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "时间段",
+                  "name": "period",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false
                 }
               ]
             }
