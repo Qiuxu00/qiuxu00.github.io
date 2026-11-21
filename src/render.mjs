@@ -39,11 +39,13 @@ const external = (url, label, cls = '') => {
   return href ? `<a class="${cls}" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '';
 };
 
-export function renderSite(input) {
-  const s = validateSite(input);
+export function renderSite(input, { preview = false, photoAsset = '' } = {}) {
+  const s = preview ? input : validateSite(input);
   const e = escapeHTML;
   const emails = [s.email, s.gmail].filter(Boolean);
-  const photo = safeURL(s.photo, { image: true });
+  // Only the editor can supply an in-memory upload; published pages retain strict URL validation.
+  const photo = preview && /^blob:https?:\/\//.test(photoAsset)
+    ? photoAsset : safeURL(photoAsset || s.photo, { image: true });
   const publications = s.publications.map(p => `<article class="publication">
     <div class="publication-year">${e(p.year)}</div><div>
       <h3>${safeURL(p.url) ? external(p.url, e(p.title)) : e(p.title)}</h3>

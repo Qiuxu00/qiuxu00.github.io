@@ -8,7 +8,7 @@
 - 已加入用户提供的姓名、学校、研究方向、校内邮箱、Scholar 和 GitHub 链接。
 - 已直接核对 Google Scholar 当前列出的两篇论文，并用 arXiv 验证：AGQ（https://arxiv.org/abs/2610.33074 ）与 TernScope（https://arxiv.org/abs/2610.29617 ），均标为预印本。论文列表由后台维护，不会自动同步 Scholar。
 - 个人简介由已提供信息整理，可以在后台修改。照片暂用姓名缩写，Gmail 未填写时不显示。
-- GitHub Pages 已上线，管理员入口已接入 Cloudflare OAuth Worker，登录配置已存入 Cloudflare Secrets。真实账号登录与在线保存仍需完成验收。
+- GitHub Pages 已上线，管理员入口已接入 Cloudflare OAuth Worker，登录配置已存入 Cloudflare Secrets。真实账号登录、在线保存与自动部署已验证。
 
 ## 第一步：本地看页面
 
@@ -64,7 +64,9 @@ GitHub 登录请在 Git 自带的浏览器登录窗口完成。如果 Git 提示
 
 5. 提交这些公开配置，等待网站重新发布。
 
-启用后访问 https://qiuxu00.github.io/admin/ ，通过 GitHub 登录后进入 **学术主页 → 个人资料与学术内容**。编辑“个人简介（英文）”，保存 / 发布。Decap CMS 会将内容提交到 GitHub，随后触发构建。网站更新需要等待 Actions 成功，并非保存后立即生效。
+启用后访问 https://qiuxu00.github.io/admin/ ，通过 GitHub 登录后进入 **学术主页 → 个人资料与学术内容**。编辑“个人简介（英文）”时，右侧会立即预览未保存的内容，使用与公开主页相同的排版；若预览被隐藏，点击编辑器右侧的眼睛图标切换显示。
+
+预览满意后点击“发布”。Decap CMS 会将内容提交到 GitHub，随后触发构建。网站更新需要等待 Actions 成功，并非保存后立即生效。
 
 本地 `/admin/` 显示配置状态，不连接在线编辑器。只有生产域名可登录；如将来绑定自定义域名，要同步修改 `admin/admin.js` 的 origin 限制、CMS 的站点 URL、Worker 的站点 origin 与 GitHub OAuth App 配置。
 
@@ -84,6 +86,7 @@ GitHub 登录请在 Git 自带的浏览器登录窗口完成。如果 Git 提示
 | `data/site.json` | 所有个人资料、简介和论文 |
 | `assets/styles.css` | 页面颜色、排版与移动端样式 |
 | `src/render.mjs` | 将资料生成 HTML |
+| `src/preview.mjs` | 在管理后台实时预览未保存的内容 |
 | `admin/` | Decap CMS 管理界面与配置 |
 | `oauth/` | GitHub 登录服务，单独部署到 Cloudflare |
 | `.github/workflows/pages.yml` | 自动生成并发布网站 |

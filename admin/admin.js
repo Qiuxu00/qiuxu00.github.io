@@ -35,6 +35,8 @@ async function start() {
     });
     document.head.append(script);
     await loaded;
+    const { registerHomepagePreview } = await import('./preview.mjs');
+    registerHomepagePreview(window.CMS, window.h, new URL('../', window.location.href));
     window.CMS.init({ config });
     document.getElementById('setup').hidden = true;
   } catch (error) {
