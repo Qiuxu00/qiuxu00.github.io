@@ -15,12 +15,13 @@
 在 `D:\HomePage` 打开 PowerShell，执行：
 
 ```powershell
+npm.cmd ci
 npm.cmd run dev
 ```
 
 打开终端显示的 http://127.0.0.1:4173/ 。修改 `data/site.json` 后刷新首页即可看到新内容。用 `Ctrl+C` 停止预览。
 
-本项目无需先安装依赖。使用 `npm.cmd` 是为了兼容 Windows PowerShell 的脚本执行策略；无需修改系统策略。
+首次使用或依赖更新后先运行 `npm.cmd ci`，安装自动处理图片所需的构建依赖。使用 `npm.cmd` 是为了兼容 Windows PowerShell 的脚本执行策略；无需修改系统策略。
 
 也可以执行 `npm.cmd run build`，然后双击 `dist/index.html` 查看静态主页。管理后台需要 HTTP / HTTPS 环境，不能通过双击 HTML 文件进行登录。
 
@@ -77,6 +78,7 @@ GitHub 登录请在 Git 自带的浏览器登录窗口完成。如果 Git 提示
 - 新增 Gmail：填写 Gmail 字段即可；留空时不展示。
 - 个人照片：通过“个人照片”字段上传，生成到 `assets/uploads/`。
 - 图片支持中文文件名。选用图片后仍需点击“发布”；同名替换会更新图片版本，避免浏览器继续使用旧图。
+- 发布时会自动将静态照片缩小并生成多档 WebP 图片，主页按设备选择尺寸，避免每位访客下载大幅原图。原图保留，头像裁切和位置仍可在外观工作台调整；外部图片链接和动图保持原样。
 - 论文：自行核实作者顺序、发表状态与链接，再添加。预印本不要填写成已录用论文。
 - 输入文字后使用工具栏排版，无需填写 HTML 或 Markdown。原有纯文字内容仍可正常显示。
 - 编辑历史保留在 GitHub 提交中。需要恢复某次文字时，可从历史版本取回并重新保存。
@@ -112,6 +114,7 @@ GitHub 登录请在 Git 自带的浏览器登录窗口完成。如果 Git 提示
 | `assets/styles.css` | 页面颜色、排版与移动端样式 |
 | `src/render.mjs` | 将资料生成 HTML |
 | `src/preview.mjs` | 在管理后台实时预览未保存的内容 |
+| `scripts/optimize-photo.mjs` | 发布时生成适合网页显示的头像图片 |
 | `src/appearance.mjs` | 共用外观设置、输入范围和样式生成 |
 | `src/richtext.mjs` | 富文本格式校验和安全渲染 |
 | `src/content.mjs` | 旧文字兼容与页面标题默认值 |

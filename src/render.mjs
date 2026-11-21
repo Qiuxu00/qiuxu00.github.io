@@ -1,4 +1,4 @@
-import { renderAppearanceCSS } from './appearance.mjs';
+import { normalizeAppearance, renderAppearanceCSS } from './appearance.mjs';
 import { isRichText, textOf, renderRichText } from './richtext.mjs';
 import { DEFAULT_TEXTS } from './content.mjs';
 
@@ -54,7 +54,7 @@ const external = (url, label, cls = '') => {
   return href ? `<a class="${cls}" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '';
 };
 
-export function renderSite(input, { preview = false, photoAsset = '', photoVersion = '', appearance = {} } = {}) {
+export function renderSite(input, { preview = false, photoAsset = '', photoVersion = '', photoVariants = null, appearance = {} } = {}) {
   const s = preview ? input : validateSite(input);
   const e = escapeHTML;
   const inline = value => renderRichText(value, { inline: true });
@@ -62,10 +62,22 @@ export function renderSite(input, { preview = false, photoAsset = '', photoVersi
   const label = key => linkedText(s.texts?.[key] ?? DEFAULT_TEXTS[key]);
   const name = textOf(s.name);
   const emails = [s.email, s.gmail].filter(Boolean);
+  const optimizedPhoto = !photoAsset && s.photo && safeURL(photoVariants?.src, { image: true });
+  const candidates = optimizedPhoto && Array.isArray(photoVariants.candidates)
+    ? photoVariants.candidates.filter(item => item && Number.isInteger(item.width) && item.width > 0 && safeURL(item.src, { image: true })) : [];
+  let responsiveAttributes = '';
+  if (candidates.length) {
+    const { avatar } = normalizeAppearance(appearance);
+    const ratio = photoVariants.originalWidth / photoVariants.originalHeight;
+    // A landscape photo covering a square needs enough pixels for the part outside the crop too.
+    const scale = avatar.objectFit === 'cover' && Number.isFinite(ratio) ? Math.max(1, ratio) : 1;
+    const sizes = `(max-width: 640px) ${Math.ceil(avatar.mobileSize * scale)}px, ${Math.ceil(avatar.desktopSize * scale)}px`;
+    responsiveAttributes = ` srcset="${e(candidates.map(item => `${safeURL(item.src, { image: true })} ${item.width}w`).join(', '))}" sizes="${sizes}"`;
+  }
   // Only the editor can supply an in-memory upload; published pages retain strict URL validation.
   let photo = preview && /^blob:https?:\/\//.test(photoAsset)
-    ? photoAsset : safeURL(photoAsset || s.photo, { image: true });
-  if (photo && !photo.startsWith('blob:') && /^[a-f\d]{12}$/.test(photoVersion)) {
+    ? photoAsset : safeURL(photoAsset || optimizedPhoto || s.photo, { image: true });
+  if (photo && !optimizedPhoto && !photo.startsWith('blob:') && /^[a-f\d]{12}$/.test(photoVersion)) {
     const url = new URL(photo, 'https://homepage.invalid/');
     url.searchParams.set('v', photoVersion);
     photo = photo.startsWith('assets/') ? `${url.pathname.slice(1)}${url.search}` : url.href;
@@ -103,7 +115,7 @@ export function renderSite(input, { preview = false, photoAsset = '', photoVersi
   </div></header>
   <div class="page-layout">
     <aside class="profile" aria-label="Profile"><div class="profile-inner" data-section="profile">
-      ${photo ? `<img class="portrait" data-avatar src="${e(photo)}" alt="${e(name)}" width="220" height="220">` : `<div class="monogram" data-avatar aria-hidden="true"><span>XQ</span></div>`}
+      ${photo ? `<img class="portrait" data-avatar src="${e(photo)}"${responsiveAttributes} alt="${e(name)}" width="220" height="220" decoding="async" fetchpriority="high">` : `<div class="monogram" data-avatar aria-hidden="true"><span>XQ</span></div>`}
       <h1>${inline(s.name)}</h1>
       ${textOf(s.chinese_name) ? `<p class="chinese-name" lang="zh-CN">${inline(s.chinese_name)}</p>` : ''}
       <p class="profile-role">${inline(s.role)}</p><p class="affiliation">${inline(s.affiliation)}</p><p class="degree">${inline(s.degree)}</p>

@@ -35,6 +35,27 @@ test('optional contacts and publications can be omitted without broken links', (
   assert.doesNotMatch(html, /href=""|mailto:"|undefined/);
   assert.match(html, /View Google Scholar profile/);
 });
+
+test('responsive photos use smaller assets with crop-aware sizes and keep draft uploads immediate', () => {
+  const saved = { ...data, photo: 'assets/uploads/original.jpg' };
+  const photoVariants = {
+    src: 'assets/generated/photo-medium.webp', originalWidth: 1800, originalHeight: 1200,
+    candidates: [480, 960, 1440].map(width => ({ src: `assets/generated/photo-${width}.webp`, width, height: width / 1.5 }))
+  };
+  const options = { photoVariants, photoVersion: 'abcdef123456', appearance: { avatar: { desktopSize: 304, mobileSize: 128 } } };
+  const html = renderSite(saved, options);
+  assert.match(html, /src="assets\/generated\/photo-medium.webp"/);
+  assert.match(html, /srcset="assets\/generated\/photo-480.webp 480w, assets\/generated\/photo-960.webp 960w, assets\/generated\/photo-1440.webp 1440w"/);
+  assert.match(html, /sizes="\(max-width: 640px\) 192px, 456px"/);
+  assert.match(html, /decoding="async" fetchpriority="high"/);
+  assert.doesNotMatch(html, /original.jpg|loading="lazy"/);
+  const contained = renderSite(saved, { ...options, appearance: { avatar: { desktopSize: 304, mobileSize: 128, objectFit: 'contain' } } });
+  assert.match(contained, /sizes="\(max-width: 640px\) 128px, 304px"/);
+  const draft = renderSite(saved, { ...options, preview: true, photoAsset: 'blob:https://qiuxu00.github.io/new-upload' });
+  assert.match(draft, /src="blob:https:\/\/qiuxu00.github.io\/new-upload"/);
+  assert.doesNotMatch(draft, /srcset=|assets\/generated\//);
+  assert.equal(saved.photo, 'assets/uploads/original.jpg');
+});
 test('the rendering fixture covers required CMS fields', async () => {
   const config = JSON.parse(await readFile(new URL('../admin/config.json', import.meta.url), 'utf8'));
   const file = config.collections[0].files[0];

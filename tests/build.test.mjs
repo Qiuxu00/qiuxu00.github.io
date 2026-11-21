@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { cp, mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import sharp from 'sharp';
+import { build } from '../scripts/build.mjs';
 import { site } from './fixtures/site.mjs';
 import { DEFAULT_APPEARANCE } from '../src/appearance.mjs';
 import { normalizeRichText } from '../src/richtext.mjs';
@@ -29,8 +30,8 @@ test('building a saved custom appearance publishes it without changing the conte
     const appearance = JSON.stringify({ settings });
     await writeFile(path.join(workspace, 'data/site.json'), content);
     await writeFile(path.join(workspace, 'data/appearance.json'), appearance);
-    const { build } = await import(pathToFileURL(path.join(workspace, 'scripts/build.mjs')).href);
-    const out = await build();
+    const buildFixture = () => build({ sourceRoot: workspace });
+    const out = await buildFixture();
     const html = await readFile(path.join(out, 'index.html'), 'utf8');
     assert.match(html, /--page-background:#fafffa/);
     assert.match(html, /width:min\(304px,100%\)/);
@@ -53,21 +54,38 @@ test('building a saved custom appearance publishes it without changing the conte
     const filename = '你好 头像(1).png';
     const uploadDirectory = path.join(workspace, 'assets/uploads');
     await mkdir(uploadDirectory, { recursive: true });
-    const firstImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l1kAAAAASUVORK5CYII=', 'base64');
+    const firstImage = await sharp({ create: { width: 32, height: 24, channels: 3, background: '#ff0000' } }).png().toBuffer();
     await writeFile(path.join(uploadDirectory, filename), firstImage);
     await writeFile(path.join(workspace, 'data/site.json'), JSON.stringify({ ...formattedSite, photo: `/assets/uploads/${filename}` }));
-    await build();
+    await buildFixture();
     const uploadedHTML = await readFile(path.join(out, 'index.html'), 'utf8');
     const uploadedPreview = JSON.parse(await readFile(path.join(out, 'admin/preview-data.json'), 'utf8'));
-    assert.match(uploadedHTML, new RegExp(`%E4%BD%A0%E5%A5%BD%20%E5%A4%B4%E5%83%8F%281%29\\.png\\?v=${uploadedPreview.photoVersion}`));
+    assert.ok(uploadedHTML.includes(`src="${uploadedPreview.photoVariants.src}"`));
+    assert.match(uploadedHTML, /srcset="assets\/generated\/[^\"]+ 32w"/);
+    assert.doesNotMatch(uploadedHTML, /src="[^\"]+uploads\//);
+    assert.equal(uploadedPreview.site.photo, `/assets/uploads/${filename}`);
+    const optimized = await sharp(await readFile(path.join(out, uploadedPreview.photoVariants.src))).metadata();
+    assert.equal(optimized.format, 'webp');
+    assert.equal(optimized.width, 32);
+    assert.equal(optimized.height, 24);
     assert.deepEqual(await readFile(path.join(out, 'assets/uploads', filename)), firstImage);
-    const secondImage = Buffer.concat([firstImage, Buffer.from('replacement')]);
+    const secondImage = await sharp({ create: { width: 32, height: 24, channels: 3, background: '#0000ff' } }).png().toBuffer();
     await writeFile(path.join(uploadDirectory, filename), secondImage);
-    await build();
+    await buildFixture();
     const replacementPreview = JSON.parse(await readFile(path.join(out, 'admin/preview-data.json'), 'utf8'));
     assert.notEqual(replacementPreview.photoVersion, uploadedPreview.photoVersion);
     assert.notEqual(replacementPreview.version, uploadedPreview.version);
+    assert.notEqual(replacementPreview.photoVariants.src, uploadedPreview.photoVariants.src);
     assert.deepEqual(await readFile(path.join(out, 'assets/uploads', filename)), secondImage);
+    assert.deepEqual(await readFile(path.join(uploadDirectory, filename)), secondImage);
+
+    // External photos remain external; the build must not try to download them.
+    await writeFile(path.join(workspace, 'data/site.json'), JSON.stringify({ ...formattedSite, photo: 'https://example.invalid/photo.jpg' }));
+    await buildFixture();
+    const externalPreview = JSON.parse(await readFile(path.join(out, 'admin/preview-data.json'), 'utf8'));
+    assert.equal(externalPreview.photoVariants, null);
+    assert.equal(externalPreview.photoVersion, '');
+    assert.match(await readFile(path.join(out, 'index.html'), 'utf8'), /src="https:\/\/example.invalid\/photo.jpg"/);
   } finally {
     // Only remove the exact temporary directory created by this test.
     const target = path.resolve(workspace);

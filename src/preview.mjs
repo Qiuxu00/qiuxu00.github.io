@@ -15,9 +15,24 @@ export function normalizeDraft(input = {}) {
   return draft;
 }
 
-export function renderDraftBody(input, photoAsset = '', appearance = {}, photoVersion = '') {
-  const html = renderSite(normalizeDraft(input), { preview: true, photoAsset, appearance, photoVersion });
+export function renderDraftBody(input, photoAsset = '', appearance = {}, photoVersion = '', photoVariants = null) {
+  const html = renderSite(normalizeDraft(input), { preview: true, photoAsset, appearance, photoVersion, photoVariants });
   return html.slice(html.indexOf('<body>') + 6, html.lastIndexOf('</body>'));
+}
+
+function resolvePhotoVariants(variants, siteRoot) {
+  const src = safeURL(variants?.src, { image: true });
+  if (!src || !Array.isArray(variants.candidates)
+    || !Number.isInteger(variants.originalWidth) || variants.originalWidth <= 0
+    || !Number.isInteger(variants.originalHeight) || variants.originalHeight <= 0) return null;
+  const candidates = variants.candidates.filter(item => item && Number.isInteger(item.width) && item.width > 0
+    && Number.isInteger(item.height) && item.height > 0 && safeURL(item.src, { image: true }));
+  if (!candidates.length) return null;
+  return {
+    ...variants,
+    src: new URL(src, siteRoot).href,
+    candidates: candidates.map(item => ({ ...item, src: new URL(safeURL(item.src, { image: true }), siteRoot).href }))
+  };
 }
 
 export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot = {}) {
@@ -47,8 +62,11 @@ export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot =
     const draft = entry.get('data')?.toJS() || {};
     const data = design ? snapshot.site || {} : draft;
     const appearance = design ? draft.settings || {} : snapshot.appearance || {};
+    // Appearance edits use the published image; avoid asking Decap to fetch its full-size original.
+    // Profile edits still resolve uploads through Decap, including a new file with the same name.
+    const photoVariants = design ? resolvePhotoVariants(snapshot.photoVariants, siteRoot) : null;
     let photoAsset = '';
-    if (data.photo) {
+    if (data.photo && !photoVariants) {
       try {
         // Decap keys new uploads by repository path, without a leading slash.
         const assetPath = typeof data.photo === 'string' ? data.photo.replace(/^\/(?=assets\/)/, '') : data.photo;
@@ -86,7 +104,7 @@ export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot =
     return createElement('div', {},
       createElement('style', { id: 'site-appearance' }, renderAppearanceCSS(appearance)),
       createElement('p', { className: 'cms-preview-note', lang: 'zh-CN' }, '实时预览 · 修改尚未发布。保存／发布后，访客才能看到更新。'),
-      createElement('div', { className: 'cms-preview-page', onClick, dangerouslySetInnerHTML: { __html: renderDraftBody(data, photoAsset, appearance, data.photo === snapshot.site?.photo ? snapshot.photoVersion : '') } })
+      createElement('div', { className: 'cms-preview-page', onClick, dangerouslySetInnerHTML: { __html: renderDraftBody(data, photoAsset, appearance, data.photo === snapshot.site?.photo ? snapshot.photoVersion : '', photoVariants) } })
     );
   }
   // File collections register by file name, not collection name.
