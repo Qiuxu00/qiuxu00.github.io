@@ -41,6 +41,8 @@ test('the rendering fixture covers required CMS fields', async () => {
   assert.equal(file.file, 'data/site.json');
   assert.equal(config.backend.branch, 'main');
   assert.equal(config.backend.repo, 'Qiuxu00/qiuxu00.github.io');
+  assert.equal(config.public_folder, config.media_folder, 'image values must match Decap upload cache keys');
+  assert.ok(!config.public_folder.startsWith('/'), 'root-relative URLs skip Decap draft image lookup');
   for (const field of file.fields.filter(field => field.required !== false)) assert.ok(Object.hasOwn(data, field.name), `${field.name} missing from fixture`);
 });
 

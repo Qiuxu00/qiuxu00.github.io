@@ -8,7 +8,7 @@
   "site_url": "https://qiuxu00.github.io",
   "display_url": "https://qiuxu00.github.io",
   "media_folder": "assets/uploads",
-  "public_folder": "/assets/uploads",
+  "public_folder": "assets/uploads",
   "locale": "zh_Hans",
   "publish_mode": "simple",
   "show_preview_links": false,

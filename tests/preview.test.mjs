@@ -51,3 +51,19 @@ test('saved Unicode photos resolve at the site root before the CMS media cache l
   const html = result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html;
   assert.match(html, /src="https:\/\/qiuxu00\.github\.io\/assets\/uploads\/%E5%A4%B4%E5%83%8F%20%231\.jpg"/);
 });
+
+test('legacy root-relative photo values resolve pending uploads through the CMS media key', () => {
+  let Preview;
+  let requestedPath;
+  registerHomepagePreview({
+    registerPreviewStyle() {},
+    registerPreviewTemplate(name, component) { if (name === 'profile') Preview = component; }
+  }, (type, props, ...children) => ({ type, props, children }), new URL('https://qiuxu00.github.io/'));
+  const result = Preview({
+    entry: { get: () => ({ toJS: () => ({ ...data, photo: '/assets/uploads/你好.jpg' }) }) },
+    getAsset: path => { requestedPath = path; return 'blob:https://qiuxu00.github.io/pending-upload'; }
+  });
+  assert.equal(requestedPath, 'assets/uploads/你好.jpg');
+  const html = result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html;
+  assert.match(html, /src="blob:https:\/\/qiuxu00\.github\.io\/pending-upload"/);
+});

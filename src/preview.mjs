@@ -50,7 +50,9 @@ export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot =
     let photoAsset = '';
     if (data.photo) {
       try {
-        const asset = getAsset(data.photo);
+        // Decap keys new uploads by repository path, without a leading slash.
+        const assetPath = typeof data.photo === 'string' ? data.photo.replace(/^\/(?=assets\/)/, '') : data.photo;
+        const asset = getAsset(assetPath);
         if (asset) {
           const assetURL = String(asset);
           const resolved = /^blob:https?:\/\//.test(assetURL) ? assetURL : safeURL(assetURL, { image: true });
