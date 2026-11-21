@@ -1,4 +1,4 @@
-import { renderSite } from './render.mjs';
+import { renderSite, safeURL } from './render.mjs';
 import { renderAppearanceCSS } from './appearance.mjs';
 import { isRichText } from './richtext.mjs';
 
@@ -15,8 +15,8 @@ export function normalizeDraft(input = {}) {
   return draft;
 }
 
-export function renderDraftBody(input, photoAsset = '', appearance = {}) {
-  const html = renderSite(normalizeDraft(input), { preview: true, photoAsset, appearance });
+export function renderDraftBody(input, photoAsset = '', appearance = {}, photoVersion = '') {
+  const html = renderSite(normalizeDraft(input), { preview: true, photoAsset, appearance, photoVersion });
   return html.slice(html.indexOf('<body>') + 6, html.lastIndexOf('</body>'));
 }
 
@@ -51,9 +51,17 @@ export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot =
     if (data.photo) {
       try {
         const asset = getAsset(data.photo);
-        if (asset) photoAsset = new URL(String(asset), siteRoot).href;
+        if (asset) {
+          const assetURL = String(asset);
+          const resolved = /^blob:https?:\/\//.test(assetURL) ? assetURL : safeURL(assetURL, { image: true });
+          if (resolved) photoAsset = new URL(resolved, siteRoot).href;
+        }
       } catch {
         // A partially typed photo URL must not interrupt the rest of the draft preview.
+      }
+      if (!photoAsset) {
+        const savedPhoto = safeURL(data.photo, { image: true });
+        if (savedPhoto) photoAsset = new URL(savedPhoto, siteRoot).href;
       }
     }
     const onClick = event => {
@@ -76,7 +84,7 @@ export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot =
     return createElement('div', {},
       createElement('style', { id: 'site-appearance' }, renderAppearanceCSS(appearance)),
       createElement('p', { className: 'cms-preview-note', lang: 'zh-CN' }, '实时预览 · 修改尚未发布。保存／发布后，访客才能看到更新。'),
-      createElement('div', { className: 'cms-preview-page', onClick, dangerouslySetInnerHTML: { __html: renderDraftBody(data, photoAsset, appearance) } })
+      createElement('div', { className: 'cms-preview-page', onClick, dangerouslySetInnerHTML: { __html: renderDraftBody(data, photoAsset, appearance, data.photo === snapshot.site?.photo ? snapshot.photoVersion : '') } })
     );
   }
   // File collections register by file name, not collection name.

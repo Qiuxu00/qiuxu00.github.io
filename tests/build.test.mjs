@@ -48,6 +48,26 @@ test('building a saved custom appearance publishes it without changing the conte
     assert.match(editorModule, new RegExp(`richtext\\.mjs\\?v=${preview.version}`));
     assert.equal(await readFile(path.join(workspace, 'data/site.json'), 'utf8'), content);
     assert.equal(await readFile(path.join(workspace, 'data/appearance.json'), 'utf8'), appearance);
+
+    // Exercise a real saved CMS image path, then replace the same filename.
+    const filename = '你好 头像(1).png';
+    const uploadDirectory = path.join(workspace, 'assets/uploads');
+    await mkdir(uploadDirectory, { recursive: true });
+    const firstImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l1kAAAAASUVORK5CYII=', 'base64');
+    await writeFile(path.join(uploadDirectory, filename), firstImage);
+    await writeFile(path.join(workspace, 'data/site.json'), JSON.stringify({ ...formattedSite, photo: `/assets/uploads/${filename}` }));
+    await build();
+    const uploadedHTML = await readFile(path.join(out, 'index.html'), 'utf8');
+    const uploadedPreview = JSON.parse(await readFile(path.join(out, 'admin/preview-data.json'), 'utf8'));
+    assert.match(uploadedHTML, new RegExp(`%E4%BD%A0%E5%A5%BD%20%E5%A4%B4%E5%83%8F%281%29\\.png\\?v=${uploadedPreview.photoVersion}`));
+    assert.deepEqual(await readFile(path.join(out, 'assets/uploads', filename)), firstImage);
+    const secondImage = Buffer.concat([firstImage, Buffer.from('replacement')]);
+    await writeFile(path.join(uploadDirectory, filename), secondImage);
+    await build();
+    const replacementPreview = JSON.parse(await readFile(path.join(out, 'admin/preview-data.json'), 'utf8'));
+    assert.notEqual(replacementPreview.photoVersion, uploadedPreview.photoVersion);
+    assert.notEqual(replacementPreview.version, uploadedPreview.version);
+    assert.deepEqual(await readFile(path.join(out, 'assets/uploads', filename)), secondImage);
   } finally {
     // Only remove the exact temporary directory created by this test.
     const target = path.resolve(workspace);

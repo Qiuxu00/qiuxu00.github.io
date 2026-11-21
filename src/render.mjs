@@ -5,8 +5,19 @@ import { DEFAULT_TEXTS } from './content.mjs';
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export function safeURL(value, { image = false } = {}) {
-  if (!value) return '';
-  if (image && /^\/?assets\/[a-z\d_./% -]+$/i.test(value) && !value.includes('..')) return value.replace(/^\//, '');
+  if (typeof value !== 'string' || !value) return '';
+  if (image && /^\/?assets\//.test(value)) {
+    const parts = value.replace(/^\//, '').split('/');
+    const encoded = [];
+    for (const part of parts) {
+      let decoded;
+      try { decoded = decodeURIComponent(part); } catch { decoded = part; }
+      // Validate path components before URL parsing can normalize traversal away.
+      if (!decoded || decoded === '.' || decoded === '..' || /[\/\\\u0000-\u001f\u007f]/.test(decoded) || /%(?:2e|2f|5c)/i.test(decoded)) return '';
+      try { encoded.push(encodeURIComponent(decoded).replace(/[!'()*]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)); } catch { return ''; }
+    }
+    return encoded.join('/');
+  }
   try {
     const url = new URL(value);
     if (url.protocol !== 'https:') return '';
@@ -43,7 +54,7 @@ const external = (url, label, cls = '') => {
   return href ? `<a class="${cls}" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '';
 };
 
-export function renderSite(input, { preview = false, photoAsset = '', appearance = {} } = {}) {
+export function renderSite(input, { preview = false, photoAsset = '', photoVersion = '', appearance = {} } = {}) {
   const s = preview ? input : validateSite(input);
   const e = escapeHTML;
   const inline = value => renderRichText(value, { inline: true });
@@ -52,8 +63,13 @@ export function renderSite(input, { preview = false, photoAsset = '', appearance
   const name = textOf(s.name);
   const emails = [s.email, s.gmail].filter(Boolean);
   // Only the editor can supply an in-memory upload; published pages retain strict URL validation.
-  const photo = preview && /^blob:https?:\/\//.test(photoAsset)
+  let photo = preview && /^blob:https?:\/\//.test(photoAsset)
     ? photoAsset : safeURL(photoAsset || s.photo, { image: true });
+  if (photo && !photo.startsWith('blob:') && /^[a-f\d]{12}$/.test(photoVersion)) {
+    const url = new URL(photo, 'https://homepage.invalid/');
+    url.searchParams.set('v', photoVersion);
+    photo = photo.startsWith('assets/') ? `${url.pathname.slice(1)}${url.search}` : url.href;
+  }
   const publications = s.publications.map(p => `<article class="publication">
     <div class="publication-year">${inline(p.year)}</div><div>
       <h3>${safeURL(p.url) ? external(p.url, linkedText(p.title)) : inline(p.title)}</h3>

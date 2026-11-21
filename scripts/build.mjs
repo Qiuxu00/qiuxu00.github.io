@@ -2,7 +2,7 @@ import { readFile, mkdir, writeFile, cp, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { renderSite } from '../src/render.mjs';
+import { renderSite, safeURL } from '../src/render.mjs';
 
 export const root = fileURLToPath(new URL('../', import.meta.url));
 
@@ -26,7 +26,16 @@ const stampModules = (source, version) => source.replace(/(['"])(\.\/[^'"?]+\.mj
 export async function build() {
   const site = JSON.parse(await readFile(path.join(root, 'data/site.json'), 'utf8'));
   const appearance = JSON.parse(await readFile(path.join(root, 'data/appearance.json'), 'utf8'));
-  const html = renderSite(site, { appearance: appearance.settings });
+  const photoPath = safeURL(site.photo, { image: true });
+  let photoVersion = '';
+  if (photoPath.startsWith('assets/')) {
+    const photoFile = path.resolve(root, ...photoPath.split('/').map(part => decodeURIComponent(part)));
+    const assetRelativePath = path.relative(path.join(root, 'assets'), photoFile);
+    if (!assetRelativePath || assetRelativePath === '..' || assetRelativePath.startsWith(`..${path.sep}`) || path.isAbsolute(assetRelativePath)) throw new Error('Photo must stay inside assets/.');
+    const photoBytes = await readFile(photoFile);
+    photoVersion = createHash('sha256').update(photoBytes).digest('hex').slice(0, 12);
+  }
+  const html = renderSite(site, { appearance: appearance.settings, photoVersion });
   const version = await assetVersion(html);
   const out = path.join(root, 'dist');
   await mkdir(out, { recursive: true });
@@ -41,7 +50,7 @@ export async function build() {
   const adminScript = stampModules(await readFile(path.join(root, 'admin/admin.js'), 'utf8'), version).replace("'vendor/quill.js'", `'vendor/quill.js?v=${version}'`);
   await writeFile(path.join(out, 'admin/admin.js'), adminScript, 'utf8');
   await writeFile(path.join(out, 'admin/index.html'), stampHTML(await readFile(path.join(root, 'admin/index.html'), 'utf8'), version), 'utf8');
-  await writeFile(path.join(out, 'admin/preview-data.json'), JSON.stringify({ site, appearance: appearance.settings, version }), 'utf8');
+  await writeFile(path.join(out, 'admin/preview-data.json'), JSON.stringify({ site, appearance: appearance.settings, version, photoVersion }), 'utf8');
   await writeFile(path.join(out, 'index.html'), stampHTML(html, version), 'utf8');
   await writeFile(path.join(out, '.nojekyll'), '');
   return out;

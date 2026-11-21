@@ -37,3 +37,17 @@ test('an incomplete photo URL does not break the editor preview', () => {
   });
   assert.match(result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html, /class="biography(?:\s[^"]*)?"/);
 });
+
+test('saved Unicode photos resolve at the site root before the CMS media cache loads', () => {
+  let Preview;
+  registerHomepagePreview({
+    registerPreviewStyle() {},
+    registerPreviewTemplate(name, component) { if (name === 'profile') Preview = component; }
+  }, (type, props, ...children) => ({ type, props, children }), new URL('https://qiuxu00.github.io/'));
+  const result = Preview({
+    entry: { get: () => ({ toJS: () => ({ ...data, photo: '/assets/uploads/头像 #1.jpg' }) }) },
+    getAsset: () => undefined
+  });
+  const html = result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html;
+  assert.match(html, /src="https:\/\/qiuxu00\.github\.io\/assets\/uploads\/%E5%A4%B4%E5%83%8F%20%231\.jpg"/);
+});

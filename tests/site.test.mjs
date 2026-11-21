@@ -17,6 +17,18 @@ test('only secure external links and local asset paths are accepted', () => {
   assert.equal(safeURL('assets/../secret', { image: true }), '');
   assert.equal(safeURL(data.scholar_url), data.scholar_url);
 });
+
+test('uploaded image paths support Unicode and encoded names without allowing traversal', () => {
+  const uploaded = '/assets/uploads/你好-93-120-.jpg';
+  const encoded = 'assets/uploads/%E4%BD%A0%E5%A5%BD-93-120-.jpg';
+  assert.equal(safeURL(uploaded, { image: true }), encoded);
+  assert.equal(safeURL(encoded, { image: true }), encoded);
+  assert.equal(safeURL('/assets/uploads/头像 (最终)#1&100%.jpg', { image: true }), 'assets/uploads/%E5%A4%B4%E5%83%8F%20%28%E6%9C%80%E7%BB%88%29%231%26100%25.jpg');
+  for (const invalid of ['assets/../secret.jpg', 'assets/%2e%2e/secret.jpg', 'assets/%252e%252e/secret.jpg', 'assets/uploads/a%2fb.jpg', 'assets/uploads/a%5cb.jpg', 'assets/uploads/a\\b.jpg', 'assets/uploads/%00.jpg', '//evil.example/photo.jpg']) {
+    assert.equal(safeURL(invalid, { image: true }), '', invalid);
+  }
+  assert.match(renderSite({ ...data, photo: uploaded }), new RegExp(`src="${encoded}"`));
+});
 test('optional contacts and publications can be omitted without broken links', () => {
   const html = renderSite({ ...data, gmail: '', publications: [] });
   assert.match(html, /mailto:researcher@example\.edu/);
