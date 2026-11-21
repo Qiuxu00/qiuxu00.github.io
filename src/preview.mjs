@@ -1,12 +1,14 @@
 import { renderSite } from './render.mjs';
 import { renderAppearanceCSS } from './appearance.mjs';
+import { isRichText } from './richtext.mjs';
 
 // Drafts may temporarily have blank fields while the author types. Publishing still validates them.
 export function normalizeDraft(input = {}) {
   const draft = {};
   for (const field of ['name', 'chinese_name', 'role', 'affiliation', 'degree', 'email', 'gmail', 'scholar_url', 'github_url', 'photo', 'about']) {
-    draft[field] = typeof input[field] === 'string' ? input[field] : '';
+    draft[field] = typeof input[field] === 'string' || isRichText(input[field]) ? input[field] : '';
   }
+  draft.texts = input.texts && typeof input.texts === 'object' ? input.texts : {};
   for (const field of ['research', 'publications', 'education']) {
     draft[field] = Array.isArray(input[field]) ? input[field].filter(item => item && typeof item === 'object') : [];
   }
@@ -19,7 +21,9 @@ export function renderDraftBody(input, photoAsset = '', appearance = {}) {
 }
 
 export function registerHomepagePreview(CMS, createElement, siteRoot, snapshot = {}) {
-  CMS.registerPreviewStyle(new URL('assets/styles.css', siteRoot).href);
+  const stylesheet = new URL('assets/styles.css', siteRoot);
+  if (snapshot.version) stylesheet.searchParams.set('v', snapshot.version);
+  CMS.registerPreviewStyle(stylesheet.href);
   CMS.registerPreviewStyle('.cms-preview-note{margin:0;padding:12px 64px 12px 24px;border-bottom:1px solid var(--line);background:var(--soft);color:var(--muted);font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.cms-preview-page{overflow-wrap:anywhere}.cms-preview-page [data-section="header"] .header-inner{padding-right:64px}', { raw: true });
 
   let activeDocument;

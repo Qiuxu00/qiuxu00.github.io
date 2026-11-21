@@ -35,5 +35,5 @@ test('an incomplete photo URL does not break the editor preview', () => {
     entry: { get: () => ({ toJS: () => ({ ...data, photo: 'https://[' }) }) },
     getAsset: value => value
   });
-  assert.match(result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html, /class="biography"/);
+  assert.match(result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html, /class="biography(?:\s[^"]*)?"/);
 });

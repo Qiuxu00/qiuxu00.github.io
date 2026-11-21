@@ -6,6 +6,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { site } from './fixtures/site.mjs';
 import { DEFAULT_APPEARANCE } from '../src/appearance.mjs';
+import { normalizeRichText } from '../src/richtext.mjs';
 
 test('building a saved custom appearance publishes it without changing the content', async () => {
   const temporaryRoot = path.resolve(tmpdir());
@@ -19,7 +20,12 @@ test('building a saved custom appearance publishes it without changing the conte
     Object.assign(settings.global, { pageWidth: 1120, sidebarWidth: 340, pageBackground: '#fafffa' });
     Object.assign(settings.avatar, { desktopSize: 304, radius: 24 });
     Object.assign(settings.about, { background: '#f5fff7' });
-    const content = JSON.stringify(site);
+    const formattedSite = { ...site, about: normalizeRichText({ ops: [
+      { insert: 'An editable ' },
+      { insert: 'highlight', attributes: { color: '#bd2538', bold: true, size: '24px' } },
+      { insert: ' remains formatted after publishing.\n' }
+    ] }) };
+    const content = JSON.stringify(formattedSite);
     const appearance = JSON.stringify({ settings });
     await writeFile(path.join(workspace, 'data/site.json'), content);
     await writeFile(path.join(workspace, 'data/appearance.json'), appearance);
@@ -30,9 +36,16 @@ test('building a saved custom appearance publishes it without changing the conte
     assert.match(html, /width:min\(304px,100%\)/);
     assert.match(html, /border-radius:24px/);
     assert.match(html, /--section-background:#f5fff7/);
+    assert.match(html, /font-size:24px;font-weight:700;color:#bd2538/);
+    assert.match(html, />highlight<\/span> remains formatted after publishing\./);
     const preview = JSON.parse(await readFile(path.join(out, 'admin/preview-data.json'), 'utf8'));
     assert.deepEqual(preview.appearance, settings);
-    assert.deepEqual(preview.site, site);
+    assert.deepEqual(preview.site, formattedSite);
+    assert.match(html, new RegExp(`assets/styles\\.css\\?v=${preview.version}`));
+    const adminHTML = await readFile(path.join(out, 'admin/index.html'), 'utf8');
+    const editorModule = await readFile(path.join(out, 'admin/richtext-widget.mjs'), 'utf8');
+    assert.match(adminHTML, new RegExp(`admin\\.js\\?v=${preview.version}`));
+    assert.match(editorModule, new RegExp(`richtext\\.mjs\\?v=${preview.version}`));
     assert.equal(await readFile(path.join(workspace, 'data/site.json'), 'utf8'), content);
     assert.equal(await readFile(path.join(workspace, 'data/appearance.json'), 'utf8'), appearance);
   } finally {

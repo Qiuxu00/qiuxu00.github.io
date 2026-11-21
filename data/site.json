@@ -12,17 +12,41 @@
   "about": "I am an undergraduate student in Computer Science and Technology at Southeast University. My research interests lie in efficient and lightweight large models.\n\nI am currently focusing on quantization methods for vision-language-action (VLA) models.\n\nFeel free to contact me!",
   "research": [
     {
-      "title": "Efficient Large Models",
+      "title": {
+        "format": "richtext",
+        "text": "Efficient Large Models",
+        "ops": [
+          {
+            "insert": "Efficient Large Models\n"
+          }
+        ]
+      },
       "description": "Efficiency and lightweight methods for large models."
     },
     {
-      "title": "Quantization",
+      "title": {
+        "format": "richtext",
+        "text": "Quantization",
+        "ops": [
+          {
+            "insert": "Quantization\n"
+          }
+        ]
+      },
       "description": "Quantization methods for vision-language-action models and MLLM."
     }
   ],
   "publications": [
     {
-      "title": "AGQ: Action-Guided Ultra-Low-Bit Quantization for Vision-Language-Action Models",
+      "title": {
+        "format": "richtext",
+        "text": "AGQ: Action-Guided Ultra-Low-Bit Quantization for Vision-Language-Action Models",
+        "ops": [
+          {
+            "insert": "AGQ: Action-Guided Ultra-Low-Bit Quantization for Vision-Language-Action Models\n"
+          }
+        ]
+      },
       "authors": "Xuhong Qiu, Zhuoyu Wu, Qiawei Zheng, Wenhui Ou, Wenqi Fang, Raphaël C.-W. Phan",
       "venue": "arXiv preprint",
       "year": "2026",
@@ -31,7 +55,15 @@
       "summary": "Action-guided quantization for reducing the memory footprint of vision-language-action models while preserving robot task performance."
     },
     {
-      "title": "TernScope: Model-Hardware Co-Design for Efficient Ternary Endoscopic Segmentation",
+      "title": {
+        "format": "richtext",
+        "text": "TernScope: Model-Hardware Co-Design for Efficient Ternary Endoscopic Segmentation",
+        "ops": [
+          {
+            "insert": "TernScope: Model-Hardware Co-Design for Efficient Ternary Endoscopic Segmentation\n"
+          }
+        ]
+      },
       "authors": "Zhuoyu Wu, Wenhui Ou, Qiawei Zheng, Xuhong Qiu, Wenqi Fang, Raphaël C.-W. Phan",
       "venue": "arXiv preprint",
       "year": "2026",
@@ -42,9 +74,41 @@
   ],
   "education": [
     {
-      "institution": "Southeast University",
+      "institution": {
+        "format": "richtext",
+        "text": "Southeast University",
+        "ops": [
+          {
+            "insert": "Southeast University\n"
+          }
+        ]
+      },
       "degree": "Undergraduate · Computer Science and Technology",
       "period": ""
     }
-  ]
+  ],
+  "texts": {
+    "nav_about": "About",
+    "nav_research": "Research",
+    "nav_publications": "Publications",
+    "about_label": "About me",
+    "hero_title": "Building toward",
+    "hero_accent": "efficient intelligence.",
+    "research_title": "Research interests",
+    "publications_title": "Publications",
+    "education_title": "Education",
+    "contact_label": "Contact",
+    "contact_title": "Let’s connect.",
+    "contact_intro": "For research discussions and academic inquiries:",
+    "sidebar_interests": "Research interests",
+    "contact_cta": "Get in touch",
+    "email_label": "Email",
+    "scholar_label": "Scholar",
+    "github_label": "GitHub",
+    "scholar_link": "View Google Scholar profile",
+    "paper_label": "Paper",
+    "code_label": "Code",
+    "footer_admin": "Admin",
+    "papers_empty": "My publication record is available on Google Scholar."
+  }
 }

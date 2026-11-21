@@ -164,7 +164,7 @@ export function renderAppearanceCSS(raw) {
     rules.push(cssBlock(`${selector} :is(h1,h2)`, [`font-size:${rem(s.titleSize)}`]));
     rules.push(cssBlock(`${selector} h3`, [`font-size:${rem(s.subheadingSize)}`]));
     rules.push(cssBlock(`${selector} :is(h1,h2,h3) :is(a,span)`, ['color:inherit', 'font-family:inherit', 'font-size:inherit']));
-    if (id === 'about') rules.push(`${selector} h2 span{color:var(--section-title-detail)}`);
+    if (id === 'about') rules.push(`${selector} h2 .hero-accent{color:var(--section-title-detail)}`);
     rules.push(cssBlock(`:root ${selector} .eyebrow`, ['color:var(--section-accent)']));
     rules.push(cssBlock(`${selector} .affiliation-note strong`, ['color:inherit']));
     rules.push(cssBlock(`${selector} .note-rule`, ['background:var(--section-accent)']));

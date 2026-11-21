@@ -34,14 +34,28 @@ async function start() {
       script.onerror = () => reject(new Error('编辑器加载失败，请检查网络后刷新。'));
     });
     document.head.append(script);
-    await loaded;
+    const richScript = document.createElement('script');
+    richScript.src = 'vendor/quill.js';
+    const richLoaded = new Promise((resolve, reject) => {
+      richScript.onload = resolve;
+      richScript.onerror = () => reject(new Error('文字编辑器加载失败，请刷新后重试。'));
+    });
+    document.head.append(richScript);
+    await Promise.all([loaded, richLoaded]);
     const snapshotResponse = await fetch('preview-data.json', { cache: 'no-store' });
     if (!snapshotResponse.ok) throw new Error('无法读取预览资料，请刷新重试。');
     const snapshot = await snapshotResponse.json();
     const { registerHomepagePreview } = await import('./preview.mjs');
     const { registerAppearanceWidget } = await import('./appearance-widget.mjs');
+    const { registerRichTextWidget } = await import('./richtext-widget.mjs');
+    const { upgradeTextContent } = await import('./content.mjs');
     registerAppearanceWidget(window.CMS, window.h, window.createClass);
+    registerRichTextWidget(window.CMS, window.h, window.createClass, window.Quill);
     registerHomepagePreview(window.CMS, window.h, new URL('../', window.location.href), snapshot);
+    window.CMS.registerEventListener({ name: 'preSave', handler: ({ entry }) => {
+      if (entry.get('collection') !== 'homepage') return;
+      return Object.entries(upgradeTextContent(entry.get('data').toJS())).reduce((data, [key, value]) => data.set(key, value), entry.get('data'));
+    } });
     window.CMS.init({ config });
     document.getElementById('setup').hidden = true;
   } catch (error) {

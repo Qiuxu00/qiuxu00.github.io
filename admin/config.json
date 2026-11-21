@@ -22,44 +22,384 @@
           "label": "个人资料与学术内容",
           "file": "data/site.json",
           "format": "json",
-          "editor": { "preview": true },
+          "editor": {
+            "preview": true
+          },
           "fields": [
-            { "label": "英文姓名", "name": "name", "widget": "string" },
-            { "label": "中文姓名", "name": "chinese_name", "widget": "string", "required": false },
-            { "label": "身份", "name": "role", "widget": "string" },
-            { "label": "学校 / 单位", "name": "affiliation", "widget": "string" },
-            { "label": "专业", "name": "degree", "widget": "string" },
-            { "label": "校内邮箱", "name": "email", "widget": "string", "required": false },
-            { "label": "Gmail", "name": "gmail", "widget": "string", "required": false },
-            { "label": "Google Scholar 地址", "name": "scholar_url", "widget": "string", "required": false },
-            { "label": "GitHub 地址", "name": "github_url", "widget": "string", "required": false },
-            { "label": "个人照片", "name": "photo", "widget": "image", "required": false },
-            { "label": "个人简介（英文）", "name": "about", "widget": "text", "hint": "空一行分段。右侧实时预览 About me，无需先保存；点击发布后需等待自动部署完成。" },
             {
-              "label": "研究方向", "name": "research", "widget": "list", "summary": "{{fields.title}}",
+              "label": "英文姓名",
+              "name": "name",
+              "widget": "richtext",
+              "multiline": false
+            },
+            {
+              "label": "中文姓名",
+              "name": "chinese_name",
+              "widget": "richtext",
+              "required": false,
+              "multiline": false
+            },
+            {
+              "label": "身份",
+              "name": "role",
+              "widget": "richtext",
+              "multiline": false
+            },
+            {
+              "label": "学校 / 单位",
+              "name": "affiliation",
+              "widget": "richtext",
+              "multiline": false
+            },
+            {
+              "label": "专业",
+              "name": "degree",
+              "widget": "richtext",
+              "multiline": false
+            },
+            {
+              "label": "校内邮箱",
+              "name": "email",
+              "widget": "string",
+              "required": false
+            },
+            {
+              "label": "Gmail",
+              "name": "gmail",
+              "widget": "string",
+              "required": false
+            },
+            {
+              "label": "Google Scholar 地址",
+              "name": "scholar_url",
+              "widget": "string",
+              "required": false
+            },
+            {
+              "label": "GitHub 地址",
+              "name": "github_url",
+              "widget": "string",
+              "required": false
+            },
+            {
+              "label": "个人照片",
+              "name": "photo",
+              "widget": "image",
+              "required": false
+            },
+            {
+              "label": "个人简介（英文）",
+              "name": "about",
+              "widget": "richtext",
+              "hint": "选中文字后用工具栏设置颜色、字号和粗细。右侧实时预览；点击发布后等待自动部署完成。",
+              "multiline": true
+            },
+            {
+              "label": "研究方向",
+              "name": "research",
+              "widget": "list",
+              "summary": "{{fields.title.text}}",
               "fields": [
-                { "label": "标题", "name": "title", "widget": "string" },
-                { "label": "描述", "name": "description", "widget": "text" }
+                {
+                  "label": "标题",
+                  "name": "title",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "描述",
+                  "name": "description",
+                  "widget": "richtext",
+                  "multiline": true
+                }
               ]
             },
             {
-              "label": "论文", "name": "publications", "widget": "list", "required": false, "summary": "{{fields.title}}",
+              "label": "论文",
+              "name": "publications",
+              "widget": "list",
+              "required": false,
+              "summary": "{{fields.title.text}}",
               "fields": [
-                { "label": "标题", "name": "title", "widget": "string" },
-                { "label": "作者（按原文顺序）", "name": "authors", "widget": "string" },
-                { "label": "期刊 / 会议 / 预印本状态", "name": "venue", "widget": "string" },
-                { "label": "年份", "name": "year", "widget": "string" },
-                { "label": "论文地址", "name": "url", "widget": "string", "required": false },
-                { "label": "代码地址", "name": "code", "widget": "string", "required": false },
-                { "label": "简短介绍", "name": "summary", "widget": "text", "required": false }
+                {
+                  "label": "标题",
+                  "name": "title",
+                  "widget": "richtext",
+                  "multiline": false,
+                  "allow_links": false
+                },
+                {
+                  "label": "作者（按原文顺序）",
+                  "name": "authors",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "期刊 / 会议 / 预印本状态",
+                  "name": "venue",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "年份",
+                  "name": "year",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "论文地址",
+                  "name": "url",
+                  "widget": "string",
+                  "required": false
+                },
+                {
+                  "label": "代码地址",
+                  "name": "code",
+                  "widget": "string",
+                  "required": false
+                },
+                {
+                  "label": "简短介绍",
+                  "name": "summary",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": true
+                }
               ]
             },
             {
-              "label": "教育经历", "name": "education", "widget": "list", "summary": "{{fields.institution}}",
+              "label": "教育经历",
+              "name": "education",
+              "widget": "list",
+              "summary": "{{fields.institution.text}}",
               "fields": [
-                { "label": "学校", "name": "institution", "widget": "string" },
-                { "label": "学位 / 专业", "name": "degree", "widget": "string" },
-                { "label": "时间段", "name": "period", "widget": "string", "required": false }
+                {
+                  "label": "学校",
+                  "name": "institution",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "学位 / 专业",
+                  "name": "degree",
+                  "widget": "richtext",
+                  "multiline": false
+                },
+                {
+                  "label": "时间段",
+                  "name": "period",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false
+                }
+              ]
+            },
+            {
+              "name": "texts",
+              "label": "页面标题、导航与按钮文字",
+              "widget": "object",
+              "required": false,
+              "collapsed": true,
+              "hint": "这些文字也支持局部格式；未修改时沿用原来的标题。",
+              "fields": [
+                {
+                  "name": "nav_about",
+                  "label": "导航 · About",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "About"
+                },
+                {
+                  "name": "nav_research",
+                  "label": "导航 · Research",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Research"
+                },
+                {
+                  "name": "nav_publications",
+                  "label": "导航 · Publications",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Publications"
+                },
+                {
+                  "name": "about_label",
+                  "label": "简介上方小标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "About me"
+                },
+                {
+                  "name": "hero_title",
+                  "label": "简介主标题 · 第一行",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Building toward"
+                },
+                {
+                  "name": "hero_accent",
+                  "label": "简介主标题 · 强调行",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "efficient intelligence."
+                },
+                {
+                  "name": "research_title",
+                  "label": "研究方向标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Research interests"
+                },
+                {
+                  "name": "publications_title",
+                  "label": "论文板块标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Publications"
+                },
+                {
+                  "name": "education_title",
+                  "label": "教育经历标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Education"
+                },
+                {
+                  "name": "contact_label",
+                  "label": "联系板块小标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Contact"
+                },
+                {
+                  "name": "contact_title",
+                  "label": "联系板块主标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Let’s connect."
+                },
+                {
+                  "name": "contact_intro",
+                  "label": "联系说明",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": true,
+                  "allow_links": true,
+                  "default": "For research discussions and academic inquiries:"
+                },
+                {
+                  "name": "sidebar_interests",
+                  "label": "侧栏研究方向标题",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Research interests"
+                },
+                {
+                  "name": "contact_cta",
+                  "label": "侧栏联系按钮文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Get in touch"
+                },
+                {
+                  "name": "email_label",
+                  "label": "邮箱按钮文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Email"
+                },
+                {
+                  "name": "scholar_label",
+                  "label": "Scholar 按钮文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Scholar"
+                },
+                {
+                  "name": "github_label",
+                  "label": "GitHub 按钮文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "GitHub"
+                },
+                {
+                  "name": "scholar_link",
+                  "label": "论文底部 Scholar 链接文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "View Google Scholar profile"
+                },
+                {
+                  "name": "paper_label",
+                  "label": "论文链接文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Paper"
+                },
+                {
+                  "name": "code_label",
+                  "label": "代码链接文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Code"
+                },
+                {
+                  "name": "footer_admin",
+                  "label": "页脚管理员入口文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "Admin"
+                },
+                {
+                  "name": "papers_empty",
+                  "label": "暂无论文时的提示文字",
+                  "widget": "richtext",
+                  "required": false,
+                  "multiline": false,
+                  "allow_links": false,
+                  "default": "My publication record is available on Google Scholar."
+                }
               ]
             }
           ]
@@ -76,9 +416,15 @@
           "label": "页面样式工作台",
           "file": "data/appearance.json",
           "format": "json",
-          "editor": { "preview": true },
+          "editor": {
+            "preview": true
+          },
           "fields": [
-            { "name": "settings", "label": "外观设计工作台", "widget": "appearance" }
+            {
+              "name": "settings",
+              "label": "外观设计工作台",
+              "widget": "appearance"
+            }
           ]
         }
       ]
