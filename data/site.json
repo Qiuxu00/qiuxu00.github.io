@@ -9,6 +9,46 @@
   "scholar_url": "https://scholar.google.com/citations?user=avThPnwAAAAJ&hl=en",
   "github_url": "https://github.com/Qiuxu00",
   "photo": "/assets/uploads/你好-93-120-.jpg",
+  "texts": {
+    "nav_about": "About",
+    "nav_research": "Research",
+    "nav_publications": "Publications",
+    "about_label": "About me",
+    "hero_title": {
+      "format": "richtext",
+      "text": "Efficiency AI",
+      "ops": [
+        {
+          "insert": "Efficiency AI\n"
+        }
+      ]
+    },
+    "hero_accent": {
+      "format": "richtext",
+      "text": "and Quantization",
+      "ops": [
+        {
+          "insert": "and Quantization\n"
+        }
+      ]
+    },
+    "research_title": "Research interests",
+    "publications_title": "Publications",
+    "education_title": "Education",
+    "contact_label": "Contact",
+    "contact_title": "Let’s connect.",
+    "contact_intro": "For research discussions and academic inquiries:",
+    "sidebar_interests": "Research interests",
+    "contact_cta": "Get in touch",
+    "email_label": "Email",
+    "scholar_label": "Scholar",
+    "github_label": "GitHub",
+    "scholar_link": "View Google Scholar profile",
+    "paper_label": "Paper",
+    "code_label": "Code",
+    "footer_admin": "Admin",
+    "papers_empty": "My publication record is available on Google Scholar."
+  },
   "about": {
     "format": "richtext",
     "text": "I am an undergraduate student in Computer Science and Technology at Southeast University. My research interests lie in efficient and lightweight large models.\n\nI am currently focusing on quantization methods for vision-language-action (VLA) models.\n\nFeel free to contact me!",
@@ -121,29 +161,5 @@
       "degree": "Undergraduate · Computer Science and Technology",
       "period": ""
     }
-  ],
-  "texts": {
-    "nav_about": "About",
-    "nav_research": "Research",
-    "nav_publications": "Publications",
-    "about_label": "About me",
-    "hero_title": "Building toward",
-    "hero_accent": "efficient intelligence.",
-    "research_title": "Research interests",
-    "publications_title": "Publications",
-    "education_title": "Education",
-    "contact_label": "Contact",
-    "contact_title": "Let’s connect.",
-    "contact_intro": "For research discussions and academic inquiries:",
-    "sidebar_interests": "Research interests",
-    "contact_cta": "Get in touch",
-    "email_label": "Email",
-    "scholar_label": "Scholar",
-    "github_label": "GitHub",
-    "scholar_link": "View Google Scholar profile",
-    "paper_label": "Paper",
-    "code_label": "Code",
-    "footer_admin": "Admin",
-    "papers_empty": "My publication record is available on Google Scholar."
-  }
+  ]
 }
