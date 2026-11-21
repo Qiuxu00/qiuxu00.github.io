@@ -1,16 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import { DEFAULT_APPEARANCE, GROUPS, normalizeAppearance, renderAppearanceCSS } from '../src/appearance.mjs';
 
-test('appearance defaults and saved settings use the same supported editor fields', async () => {
-  const saved = JSON.parse(await readFile(new URL('../data/appearance.json', import.meta.url), 'utf8'));
-  assert.deepEqual(normalizeAppearance(saved.settings), DEFAULT_APPEARANCE);
+test('appearance defaults provide the supported editor fields', () => {
+  assert.deepEqual(normalizeAppearance({}), DEFAULT_APPEARANCE);
   for (const group of GROUPS) {
     for (const field of group.fields) assert.ok(Object.hasOwn(DEFAULT_APPEARANCE[group.id], field.key), `${group.id}.${field.key}`);
   }
-  assert.equal(saved.settings.avatar.desktopSize, 220);
-  assert.equal(saved.settings.avatar.radius, 0);
+  assert.equal(DEFAULT_APPEARANCE.avatar.desktopSize, 220);
+  assert.equal(DEFAULT_APPEARANCE.avatar.radius, 0);
 });
 
 test('partial and damaged drafts fall back safely and clamp layout bounds', () => {

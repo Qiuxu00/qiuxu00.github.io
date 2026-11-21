@@ -1,10 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import { renderSite } from '../src/render.mjs';
 import { registerHomepagePreview, renderDraftBody } from '../src/preview.mjs';
 
-const data = JSON.parse(await readFile(new URL('../data/site.json', import.meta.url), 'utf8'));
+import { site as data } from './fixtures/site.mjs';
 
 test('an unsaved biography uses exactly the public-page body rendering', () => {
   const draft = { ...data, about: 'Unsaved line.\n\nSecond paragraph.\nA line break.' };

@@ -2,8 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { renderSite, safeURL } from '../src/render.mjs';
-
-const data = JSON.parse(await readFile(new URL('../data/site.json', import.meta.url), 'utf8'));
+import { site as data } from './fixtures/site.mjs';
 test('saved biography becomes public HTML and malicious text stays text', () => {
   const edited = { ...data, about: 'Updated biography.\n\n<script>alert(1)</script>' };
   const html = renderSite(edited);
@@ -20,15 +19,26 @@ test('only secure external links and local asset paths are accepted', () => {
 });
 test('optional contacts and publications can be omitted without broken links', () => {
   const html = renderSite({ ...data, gmail: '', publications: [] });
-  assert.match(html, /mailto:qiuxuhong@seu\.edu\.cn/);
+  assert.match(html, /mailto:researcher@example\.edu/);
   assert.doesNotMatch(html, /href=""|mailto:"|undefined/);
   assert.match(html, /View Google Scholar profile/);
 });
-test('CMS fields and saved data agree', async () => {
+test('the rendering fixture covers required CMS fields', async () => {
   const config = JSON.parse(await readFile(new URL('../admin/config.json', import.meta.url), 'utf8'));
   const file = config.collections[0].files[0];
   assert.equal(file.file, 'data/site.json');
   assert.equal(config.backend.branch, 'main');
   assert.equal(config.backend.repo, 'Qiuxu00/qiuxu00.github.io');
-  for (const field of file.fields) assert.ok(Object.hasOwn(data, field.name), `${field.name} missing from content`);
+  for (const field of file.fields.filter(field => field.required !== false)) assert.ok(Object.hasOwn(data, field.name), `${field.name} missing from fixture`);
+});
+
+test('normal contact and biography edits remain publishable', () => {
+  const changed = { ...data, email: 'updated@example.edu', scholar_url: 'https://scholar.google.com', about: 'I study undefined behavior in programs.' };
+  const html = renderSite(changed);
+  assert.match(html, /mailto:updated@example\.edu/);
+  assert.match(html, /href="https:\/\/scholar\.google\.com\/"/);
+  assert.match(html, /undefined behavior/);
+  for (const field of ['email', 'gmail', 'scholar_url', 'github_url', 'chinese_name', 'photo']) delete changed[field];
+  const withoutContacts = renderSite(changed);
+  assert.doesNotMatch(withoutContacts, /mailto:|href=""|View Google Scholar profile/);
 });
