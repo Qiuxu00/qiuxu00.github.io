@@ -16,8 +16,8 @@
       "description": "Efficiency and lightweight methods for large models."
     },
     {
-      "title": "VLA Quantization",
-      "description": "Quantization methods for vision-language-action models."
+      "title": "Quantization",
+      "description": "Quantization methods for vision-language-action models and MLLM."
     }
   ],
   "publications": [
