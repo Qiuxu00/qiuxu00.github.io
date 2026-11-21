@@ -1,9 +1,9 @@
 {
   "settings": {
     "global": {
-      "pageWidth": 1120,
+      "pageWidth": 1360,
       "sidebarWidth": 340,
-      "columnGap": 80,
+      "columnGap": 120,
       "pageBackground": "#fafffa",
       "pageBackgroundDark": ""
     },
@@ -45,11 +45,11 @@
     },
     "profile": {
       "bodyFont": "system",
-      "titleFont": "system",
-      "bodySize": 16,
-      "titleSize": 30,
-      "subheadingSize": 16,
-      "bodyWeight": "400",
+      "titleFont": "georgia",
+      "bodySize": 14,
+      "titleSize": 35,
+      "subheadingSize": 21,
+      "bodyWeight": "600",
       "titleWeight": "600",
       "lineHeight": 1.75,
       "letterSpacing": 0,
@@ -70,10 +70,10 @@
       "shadowStrength": 14
     },
     "about": {
-      "bodyFont": "system",
+      "bodyFont": "georgia",
       "titleFont": "georgia",
-      "bodySize": 17,
-      "titleSize": 44,
+      "bodySize": 16,
+      "titleSize": 49,
       "subheadingSize": 18,
       "bodyWeight": "400",
       "titleWeight": "400",
@@ -96,10 +96,10 @@
       "shadowStrength": 14
     },
     "research": {
-      "bodyFont": "system",
-      "titleFont": "system",
+      "bodyFont": "georgia",
+      "titleFont": "georgia",
       "bodySize": 16,
-      "titleSize": 22,
+      "titleSize": 35,
       "subheadingSize": 18,
       "bodyWeight": "400",
       "titleWeight": "600",
@@ -123,9 +123,9 @@
     },
     "publications": {
       "bodyFont": "system",
-      "titleFont": "system",
+      "titleFont": "georgia",
       "bodySize": 16,
-      "titleSize": 22,
+      "titleSize": 35,
       "subheadingSize": 18,
       "bodyWeight": "400",
       "titleWeight": "600",
@@ -149,9 +149,9 @@
     },
     "education": {
       "bodyFont": "system",
-      "titleFont": "system",
+      "titleFont": "georgia",
       "bodySize": 16,
-      "titleSize": 22,
+      "titleSize": 35,
       "subheadingSize": 18,
       "bodyWeight": "400",
       "titleWeight": "600",
@@ -177,10 +177,10 @@
       "bodyFont": "system",
       "titleFont": "georgia",
       "bodySize": 16,
-      "titleSize": 30,
+      "titleSize": 35,
       "subheadingSize": 18,
       "bodyWeight": "400",
-      "titleWeight": "400",
+      "titleWeight": "600",
       "lineHeight": 1.75,
       "letterSpacing": 0,
       "textColor": "",
