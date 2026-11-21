@@ -8,7 +8,7 @@
 - 已加入用户提供的姓名、学校、研究方向、校内邮箱、Scholar 和 GitHub 链接。
 - 已直接核对 Google Scholar 当前列出的两篇论文，并用 arXiv 验证：AGQ（https://arxiv.org/abs/2610.33074 ）与 TernScope（https://arxiv.org/abs/2610.29617 ），均标为预印本。论文列表由后台维护，不会自动同步 Scholar。
 - 个人简介由已提供信息整理，可以在后台修改。照片暂用姓名缩写，Gmail 未填写时不显示。
-- GitHub 登录代码和自动发布配置已准备；管理员功能仍需部署 OAuth Worker 并配置 OAuth App。真实登录与在线保存尚未验证。
+- GitHub Pages 已上线，管理员入口已接入 Cloudflare OAuth Worker，登录配置已存入 Cloudflare Secrets。真实账号登录与在线保存仍需完成验收。
 
 ## 第一步：本地看页面
 

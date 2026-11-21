@@ -2,7 +2,7 @@
 
 这一目录只负责登录。主页仍然发布在 GitHub Pages，Decap CMS 将你在表单中的修改保存到 GitHub 仓库，再由主页的发布流程更新网站。
 
-**当前状态：代码、7 项自动化测试和 Wrangler 的 dry-run 打包验证均已完成；尚未部署到 Cloudflare，也未接入真实 GitHub OAuth App。** 没有这两项设置时，网页的管理员登录不会生效。
+**当前状态：代码、7 项自动化测试和 Wrangler 的 dry-run 打包验证均已完成；服务已部署到 https://xuhong-homepage-auth.192013836.workers.dev ，GitHub OAuth 配置已保存为 Cloudflare Secrets。主页已接入该登录服务，真实账号登录和保存仍需完成验收。**
 
 ## 第一步：创建 Worker，取得登录服务网址
 
@@ -35,6 +35,8 @@ npm.cmd run deploy
 | Application name | `Xuhong Qiu Homepage Admin` |
 | Homepage URL | `https://qiuxu00.github.io` |
 | Authorization callback URL | 第一步的真实 Worker 网址，加上 `/callback` |
+| Enable Device Flow | 不勾选 |
+| Expire user access tokens | 若显示该选项，请取消勾选；当前编辑器没有接入令牌刷新流程 |
 
 例如 Worker 网址是 `https://xuhong-homepage-auth.example.workers.dev`，回调就是 `https://xuhong-homepage-auth.example.workers.dev/callback`。示例域名不能直接使用。
 
