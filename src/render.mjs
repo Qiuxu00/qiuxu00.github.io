@@ -1,3 +1,5 @@
+import { renderAppearanceCSS } from './appearance.mjs';
+
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export function safeURL(value, { image = false } = {}) {
@@ -39,7 +41,7 @@ const external = (url, label, cls = '') => {
   return href ? `<a class="${cls}" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '';
 };
 
-export function renderSite(input, { preview = false, photoAsset = '' } = {}) {
+export function renderSite(input, { preview = false, photoAsset = '', appearance = {} } = {}) {
   const s = preview ? input : validateSite(input);
   const e = escapeHTML;
   const emails = [s.email, s.gmail].filter(Boolean);
@@ -68,17 +70,18 @@ export function renderSite(input, { preview = false, photoAsset = '' } = {}) {
   <title>${e(s.name)} · ${e(s.affiliation)}</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/styles.css">
+  <style id="site-appearance">${renderAppearanceCSS(appearance)}</style>
   <script src="assets/site.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header"><div class="header-inner">
+  <header class="site-header" data-section="header"><div class="header-inner">
     <a class="wordmark" href="#about" aria-label="${e(s.name)}, home">${e(s.name)}<span class="wordmark-dot">.</span></a>
     <nav aria-label="Main navigation"><a href="#about">About</a><a href="#research">Research</a><a href="#publications">Publications</a><button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch theme" aria-pressed="false">${icon('sun')}</button></nav>
   </div></header>
   <div class="page-layout">
-    <aside class="profile" aria-label="Profile"><div class="profile-inner">
-      ${photo ? `<img class="portrait" src="${e(photo)}" alt="${e(s.name)}" width="180" height="180">` : `<div class="monogram" aria-hidden="true"><span>XQ</span></div>`}
+    <aside class="profile" aria-label="Profile"><div class="profile-inner" data-section="profile">
+      ${photo ? `<img class="portrait" data-avatar src="${e(photo)}" alt="${e(s.name)}" width="220" height="220">` : `<div class="monogram" data-avatar aria-hidden="true"><span>XQ</span></div>`}
       <h1>${e(s.name)}</h1>
       ${s.chinese_name ? `<p class="chinese-name" lang="zh-CN">${e(s.chinese_name)}</p>` : ''}
       <p class="profile-role">${e(s.role)}</p><p class="affiliation">${e(s.affiliation)}</p><p class="degree">${e(s.degree)}</p>
@@ -87,20 +90,20 @@ export function renderSite(input, { preview = false, photoAsset = '' } = {}) {
       <a class="contact-link" href="#contact">Get in touch</a>
     </div></aside>
     <main id="main">
-      <section id="about" class="about-section"><p class="eyebrow">About me</p><h2>Building toward<br><span>efficient intelligence.</span></h2>
+      <section id="about" class="about-section" data-section="about"><p class="eyebrow">About me</p><h2>Building toward<br><span>efficient intelligence.</span></h2>
         <div class="biography">${s.about.split(/\n\s*\n/).filter(p => p.trim()).map(p => `<p>${e(p.trim()).replace(/\n/g, '<br>')}</p>`).join('')}</div>
         <div class="affiliation-note"><span class="note-rule" aria-hidden="true"></span><span>${e(s.degree)}<br><strong>${e(s.affiliation)}</strong></span></div>
       </section>
-      <section id="research"><div class="section-heading"><h2>Research interests</h2><span class="section-line" aria-hidden="true"></span></div><div class="research-grid">${s.research.map(r => `<article class="research-item"><h3>${e(r.title)}</h3><p>${e(r.description)}</p></article>`).join('')}</div></section>
-      <section id="publications"><div class="section-heading"><h2>Publications</h2><span class="section-line" aria-hidden="true"></span></div>
+      <section id="research" data-section="research"><div class="section-heading"><h2>Research interests</h2><span class="section-line" aria-hidden="true"></span></div><div class="research-grid">${s.research.map(r => `<article class="research-item"><h3>${e(r.title)}</h3><p>${e(r.description)}</p></article>`).join('')}</div></section>
+      <section id="publications" data-section="publications"><div class="section-heading"><h2>Publications</h2><span class="section-line" aria-hidden="true"></span></div>
         ${publications || `<p class="section-intro">My publication record is available on Google Scholar.</p>`}
         ${external(s.scholar_url, `${icon('scholar')}<span>View Google Scholar profile</span>`, 'scholar-link')}
       </section>
-      <section id="education"><div class="section-heading"><h2>Education</h2><span class="section-line" aria-hidden="true"></span></div><div class="education-list">${s.education.map(item => `<article class="education-item"><div><h3>${e(item.institution)}</h3><p>${e(item.degree)}</p></div>${item.period ? `<span class="education-period">${e(item.period)}</span>` : ''}</article>`).join('')}</div></section>
-      <section id="contact" class="contact-section"><p class="eyebrow">Contact</p><h2>Let’s connect.</h2><p>For research discussions and academic inquiries:</p><div class="contact-emails">${emails.map(email => `<a href="mailto:${e(email)}">${e(email)}</a>`).join('')}</div></section>
+      <section id="education" data-section="education"><div class="section-heading"><h2>Education</h2><span class="section-line" aria-hidden="true"></span></div><div class="education-list">${s.education.map(item => `<article class="education-item"><div><h3>${e(item.institution)}</h3><p>${e(item.degree)}</p></div>${item.period ? `<span class="education-period">${e(item.period)}</span>` : ''}</article>`).join('')}</div></section>
+      <section id="contact" class="contact-section" data-section="contact"><p class="eyebrow">Contact</p><h2>Let’s connect.</h2><p>For research discussions and academic inquiries:</p><div class="contact-emails">${emails.map(email => `<a href="mailto:${e(email)}">${e(email)}</a>`).join('')}</div></section>
     </main>
   </div>
-  <footer class="site-footer"><span>© ${new Date().getUTCFullYear()} ${e(s.name)}</span><div>${external(s.github_url, 'GitHub')}<a href="admin/">Admin</a></div></footer>
+  <footer class="site-footer" data-section="footer"><span>© ${new Date().getUTCFullYear()} ${e(s.name)}</span><div>${external(s.github_url, 'GitHub')}<a href="admin/">Admin</a></div></footer>
 </body>
 </html>`;
 }

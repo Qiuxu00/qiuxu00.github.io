@@ -65,6 +65,23 @@
           ]
         }
       ]
+    },
+    {
+      "name": "design",
+      "label": "外观设计",
+      "description": "分别调整头像、各板块的文字、颜色、布局和悬停效果。",
+      "files": [
+        {
+          "name": "appearance",
+          "label": "页面样式工作台",
+          "file": "data/appearance.json",
+          "format": "json",
+          "editor": { "preview": true },
+          "fields": [
+            { "name": "settings", "label": "外观设计工作台", "widget": "appearance" }
+          ]
+        }
+      ]
     }
   ]
 }

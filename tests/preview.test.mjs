@@ -30,11 +30,11 @@ test('an incomplete photo URL does not break the editor preview', () => {
   let Preview;
   registerHomepagePreview({
     registerPreviewStyle() {},
-    registerPreviewTemplate(name, component) { Preview = component; }
+    registerPreviewTemplate(name, component) { if (name === 'profile') Preview = component; }
   }, (type, props, ...children) => ({ type, props, children }), new URL('https://qiuxu00.github.io/'));
   const result = Preview({
     entry: { get: () => ({ toJS: () => ({ ...data, photo: 'https://[' }) }) },
     getAsset: value => value
   });
-  assert.match(result.children[1].props.dangerouslySetInnerHTML.__html, /class="biography"/);
+  assert.match(result.children.find(child => child.props?.dangerouslySetInnerHTML).props.dangerouslySetInnerHTML.__html, /class="biography"/);
 });

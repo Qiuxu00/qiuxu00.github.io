@@ -6,14 +6,16 @@ import { renderSite } from '../src/render.mjs';
 export const root = fileURLToPath(new URL('../', import.meta.url));
 export async function build() {
   const site = JSON.parse(await readFile(path.join(root, 'data/site.json'), 'utf8'));
-  const html = renderSite(site);
+  const appearance = JSON.parse(await readFile(path.join(root, 'data/appearance.json'), 'utf8'));
+  const html = renderSite(site, { appearance: appearance.settings });
   const out = path.join(root, 'dist');
   await mkdir(out, { recursive: true });
   await cp(path.join(root, 'assets'), path.join(out, 'assets'), { recursive: true });
   await cp(path.join(root, 'admin'), path.join(out, 'admin'), { recursive: true });
-  for (const module of ['render.mjs', 'preview.mjs']) {
+  for (const module of ['render.mjs', 'preview.mjs', 'appearance.mjs']) {
     await cp(path.join(root, 'src', module), path.join(out, 'admin', module));
   }
+  await writeFile(path.join(out, 'admin/preview-data.json'), JSON.stringify({ site, appearance: appearance.settings }), 'utf8');
   await writeFile(path.join(out, 'index.html'), html, 'utf8');
   await writeFile(path.join(out, '.nojekyll'), '');
   return out;

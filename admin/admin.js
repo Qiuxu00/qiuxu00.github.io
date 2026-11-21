@@ -35,8 +35,13 @@ async function start() {
     });
     document.head.append(script);
     await loaded;
+    const snapshotResponse = await fetch('preview-data.json', { cache: 'no-store' });
+    if (!snapshotResponse.ok) throw new Error('无法读取预览资料，请刷新重试。');
+    const snapshot = await snapshotResponse.json();
     const { registerHomepagePreview } = await import('./preview.mjs');
-    registerHomepagePreview(window.CMS, window.h, new URL('../', window.location.href));
+    const { registerAppearanceWidget } = await import('./appearance-widget.mjs');
+    registerAppearanceWidget(window.CMS, window.h, window.createClass);
+    registerHomepagePreview(window.CMS, window.h, new URL('../', window.location.href), snapshot);
     window.CMS.init({ config });
     document.getElementById('setup').hidden = true;
   } catch (error) {
